@@ -11,7 +11,7 @@ namespace exercise.main
         private Filling _filling;
         public Bagel(float price, Filling filling) : base(price)
         {
-           _filling = filling;
+           _filling = filling; 
         }
 
         public Bagel(float price) : base(price)
