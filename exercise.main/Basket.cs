@@ -33,24 +33,47 @@ namespace exercise.main
         public int Capacity {get {return _capacity;} }
         public int Count { get { return _count; } }
 
-        public Bagel AddItem(Product item)
+        public Bagel? AddItem(Product item)
         {
-            throw new NotImplementedException();
+            if (_count <= _capacity)
+            {
+                _items.Add(item);
+                _count++;
+                return (Bagel)item;
+            }
+            else return null;
         }
 
-        public Bagel RemoveItem(Guid v)
+        public Bagel? RemoveItem(Guid id)
         {
-            throw new NotImplementedException();
+            if (_count == 0) { return null; }
+
+            foreach (Product item in _items)
+            {
+                if (item.Id == id)
+                {
+                    _items.Remove(item);
+                    _count--;
+                    return (Bagel)item;
+                }
+            }
+            return null;
         }
 
-        public bool ChangeCapacity(int v)
+        public bool ChangeCapacity(int ncapacity)
         {
-            throw new NotImplementedException();
+            if(_role == Role.Manager && ncapacity >= 0)
+            {
+                _capacity = ncapacity;
+                return true;
+            }
+            return false;
         }
 
         public float GetBasketTotalPrice()
         {
-            throw new NotImplementedException();
+            if(_count <= 0) { return 0; }
+            return _items.Sum(x => x.Price);
         }
     }
 }

@@ -20,9 +20,10 @@ namespace exercise.main
         }
 
         public Filling Filling { get { return _filling; } set { _filling = value; } }
-        public void ChooseFillings(Filling filling)
+        public Filling ChooseFillings(Filling filling)
         {
-            throw new NotImplementedException();
+            _filling = filling;
+            return _filling;
         }
     }
 }

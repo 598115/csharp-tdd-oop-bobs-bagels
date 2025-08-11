@@ -20,9 +20,15 @@ namespace exercise.main
 
         public float Price { get { return _price; } set { _price = value; } }
 
-        public void changePrice(float v)
+        public float changePrice(float nprice)
         {
-            throw new NotImplementedException();
+            if (nprice < 0)
+            {
+                _price = 0;
+                return 0;
+            }
+            _price = nprice;
+            return _price;
         }
 
     }

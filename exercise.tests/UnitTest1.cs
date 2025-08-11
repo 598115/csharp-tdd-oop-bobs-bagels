@@ -36,7 +36,8 @@ public class Tests
         Filling filling = new Filling(1, FillingType.Plain);
         Bagel bagel = new(0.49f, filling);
         basket.AddItem(bagel);
-        Bagel rmbagel = basket.RemoveItem(bagel.Id);
+        Guid nonExist = new Guid();
+        Bagel? rmbagel = basket.RemoveItem(nonExist);
 
         Assert.That(rmbagel, Is.Null);
 
@@ -59,7 +60,7 @@ public class Tests
     {
         int capacity = 5;
 
-        Basket basket = new(1);
+        Basket basket = new(1, Role.Manager);
 
         basket.ChangeCapacity(capacity);
 
@@ -89,8 +90,8 @@ public class Tests
         Bagel bagel1 = new(0.2f, filling);
         Bagel bagel2 = new(0.5f, filling);
 
-        Bagel result1 = basket.AddItem(bagel1);
-        Bagel result2 = basket.AddItem(bagel2);
+        Bagel? result1 = basket.AddItem(bagel1);
+        Bagel? result2 = basket.AddItem(bagel2);
 
         Assert.That(result1, Is.InstanceOf(typeof(Bagel))); //Return added bagel upon succesfull add
         Assert.That(result2, Is.Null); //Return null when basket full
