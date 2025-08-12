@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace exercise.main
 {
-    public enum FillingType
+    public enum BagelType
     {
-        Bacon, Egg, Cheese, Cream_Cheese, Smoked_Salmon, Ham, None
+        Onion, Plain, Everything, Sesame
     }
 }

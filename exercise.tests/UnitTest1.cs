@@ -9,8 +9,8 @@ public class Tests
     public void TestItemAdded()
     {
         Basket basket = new(1);
-        Filling filling = new Filling(1, FillingType.Plain);
-        Bagel bagel = new(1.0f, filling);
+        Filling filling = new Filling(FillingType.Bacon);
+        Bagel bagel = new(filling, BagelType.Plain);
         basket.AddItem(bagel);
 
         Assert.That(basket.Count, Is.EqualTo(1));
@@ -20,8 +20,8 @@ public class Tests
     public void TestItemRemoved()
     {
         Basket basket = new(1);
-        Filling filling = new Filling(1, FillingType.Plain);
-        Bagel bagel = new(0.49f, filling);
+        Filling filling = new Filling(FillingType.Bacon);
+        Bagel bagel = new(filling, BagelType.Sesame);
         basket.AddItem(bagel);
         basket.RemoveItem(bagel.Id);
 
@@ -33,11 +33,11 @@ public class Tests
     public void CantRemoveNonExistentItem()
     {
         Basket basket = new(1);
-        Filling filling = new Filling(1, FillingType.Plain);
-        Bagel bagel = new(0.49f, filling);
+        Filling filling = new Filling(FillingType.Bacon);
+        Bagel bagel = new(filling, BagelType.Sesame);
         basket.AddItem(bagel);
         Guid nonExist = new Guid();
-        Bagel? rmbagel = basket.RemoveItem(nonExist);
+        Bagel? rmbagel = (Bagel?) basket.RemoveItem(nonExist);
 
         Assert.That(rmbagel, Is.Null);
 
@@ -47,8 +47,8 @@ public class Tests
     public void CheckPriceIsRight()
     {
         float price = 5.99f;
-        Filling filling = new Filling(1, FillingType.Plain);
-        Bagel bagel = new(0.49f, filling);
+        Filling filling = new Filling(FillingType.Bacon);
+        Bagel bagel = new(filling, BagelType.Sesame);
 
         bagel.changePrice(5.99f); // Inflation..
 
@@ -85,13 +85,13 @@ public class Tests
         int capacity = 1;
 
         Basket basket = new(capacity);
-        Filling filling = new Filling(1, FillingType.Plain);
+        Filling filling = new Filling(FillingType.Bacon);
 
-        Bagel bagel1 = new(0.2f, filling);
-        Bagel bagel2 = new(0.5f, filling);
+        Bagel bagel1 = new(filling, BagelType.Plain);
+        Bagel bagel2 = new(filling, BagelType.Plain);
 
-        Bagel? result1 = basket.AddItem(bagel1);
-        Bagel? result2 = basket.AddItem(bagel2);
+        Bagel? result1 = (Bagel?) basket.AddItem(bagel1);
+        Bagel? result2 = (Bagel?) basket.AddItem(bagel2);
 
         Assert.That(result1, Is.InstanceOf(typeof(Bagel))); //Return added bagel upon succesfull add
         Assert.That(result2, Is.Null); //Return null when basket full
@@ -100,15 +100,15 @@ public class Tests
     [Test]
     public void BasketTotalCostCorrect()
     {
-        float price1 = 0.50f;
-        float price2 = 0.70f;
-        float price3 = 1.0f;
+        float price1 = 0.39f + 0.12f;
+        float price2 = 0.49f + 0.12f;
+        float price3 = 0.49f + 0.12f;
 
-        Filling filling = new Filling(1, FillingType.Plain);
+        Filling filling = new Filling(FillingType.Bacon);
 
-        Bagel bagel1 = new(price1, filling);
-        Bagel bagel2 = new(price2, filling);
-        Bagel bagel3 = new(price3, filling);
+        Bagel bagel1 = new(filling, BagelType.Plain);
+        Bagel bagel2 = new(filling, BagelType.Onion);
+        Bagel bagel3 = new(filling, BagelType.Everything);
 
         Basket basket = new(3);
 
@@ -125,13 +125,47 @@ public class Tests
     [Test]
     public void GotChosenFilling()
     {
-        Bagel bagel = new Bagel(0.50f);
+        Bagel bagel = new Bagel(null, BagelType.Plain);
 
-        Filling filling = new(0.12f, FillingType.Onion);
+        Filling filling = new(FillingType.Bacon);
 
         bagel.ChooseFillings(filling);
 
-        Assert.That(bagel.Filling.Type, Is.EqualTo(FillingType.Onion));
+        Assert.That(bagel.Filling.Type, Is.EqualTo(FillingType.Bacon));
     }
 
+    [Test]
+    public void TestDiscountDealCoffeeDiscount()
+    {
+
+        ProductBundle bundle = new(BundleType.coffeeBagel);
+        bundle.CoffeeAndBagelDeal(new Filling(FillingType.Bacon),BagelType.Onion);
+
+
+        Assert.That(bundle.Discount, Is.EqualTo(0.23f));
+    }
+
+    [Test]
+    public void Plain6BagelDealCorrectDiscount()
+    {
+
+        ProductBundle bundle = new(BundleType.bagel6);
+        Filling filling = new(FillingType.Bacon);
+
+        bundle.BagelDeal6(BagelType.Plain, filling, filling, filling, filling, filling, filling);
+
+        Assert.That(bundle.Discount, Is.EqualTo(0.0f));
+    }
+
+    [Test]
+    public void Bagel12DealCorrectPrice()
+    {
+
+        ProductBundle bundle = new(BundleType.bagel12);
+        Filling filling = new(FillingType.Bacon);
+
+        bundle.BagelDeal12(BagelType.Plain, filling, filling, filling, filling, filling, filling, filling, filling, filling, filling, filling, filling);
+
+        Assert.That(bundle.Price, Is.EqualTo(3.99f));
+    }
 }

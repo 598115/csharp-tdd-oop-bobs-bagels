@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,18 +34,18 @@ namespace exercise.main
         public int Capacity {get {return _capacity;} }
         public int Count { get { return _count; } }
 
-        public Bagel? AddItem(Product item)
+        public Product? AddItem(Product item)
         {
             if (_count <= _capacity)
             {
                 _items.Add(item);
                 _count++;
-                return (Bagel)item;
+                return item;
             }
             else return null;
         }
 
-        public Bagel? RemoveItem(Guid id)
+        public Product? RemoveItem(Guid id)
         {
             if (_count == 0) { return null; }
 
@@ -54,7 +55,7 @@ namespace exercise.main
                 {
                     _items.Remove(item);
                     _count--;
-                    return (Bagel)item;
+                    return item;
                 }
             }
             return null;
@@ -73,7 +74,29 @@ namespace exercise.main
         public float GetBasketTotalPrice()
         {
             if(_count <= 0) { return 0; }
-            return _items.Sum(x => x.Price);
+            float cost = _items.Sum(x => x.Price);
+            return cost;
         }
+
+        public void PrintReceipt()
+        {
+            float total = GetBasketTotalPrice();
+            CultureInfo local = new("en-GB");
+
+            string text = 
+                "=============[ Bob's Bagels Receipt ]===============\n" +
+                "====================================================\n\n";
+            foreach (Product item in _items)
+            {
+                if (item is ProductBundle) { text += $"{item.ToString()}\n\n"; continue; }
+                text += $"{item.ToString()}  ---  {item.Price.ToString("C", local)}\n\n";
+            }
+
+            text += $"\n\n\nTotal:  {total.ToString("C", local)}\n====================================================";
+
+            Console.WriteLine(text);
+        }
+      
+        
     }
 }

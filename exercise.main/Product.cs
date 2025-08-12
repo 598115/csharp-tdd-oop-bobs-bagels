@@ -10,15 +10,23 @@ namespace exercise.main
     {
         private Guid _id;
         private float _price;
-        public Product(float price)
+        private Enum _type;
+        private string _SKU;
+          
+        public Product(Enum type)
         {
             _id = Guid.NewGuid();
-            _price = price;
+            _price = 0;
+            _type = type;
+            _SKU = "";
         }
 
         public Guid Id { get { return _id; } set { _id = value; } }
 
         public float Price { get { return _price; } set { _price = value; } }
+        public Enum Type { get { return _type; } set { _type = value; } }
+
+        public string SKU { get { return _SKU; } set { _SKU = value; } }
 
         public float changePrice(float nprice)
         {

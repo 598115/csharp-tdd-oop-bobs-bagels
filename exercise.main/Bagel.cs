@@ -9,21 +9,50 @@ namespace exercise.main
     public class Bagel : Product
     {
         private Filling _filling;
-        public Bagel(float price, Filling filling) : base(price)
+        private ProductLookup _lookup = new();
+        private readonly BagelType _type;
+        public Bagel(Filling filling, BagelType type) : base(type)
         {
-           _filling = filling; 
+           _filling = filling;
+           _type = type; 
+            this.CalculatePrice();
+            this.SKU = _lookup.LookupSKUByType(type);
         }
 
-        public Bagel(float price) : base(price)
+        public Bagel(BagelType type) : base(type)
         {
-            _filling = new Filling(0.39f, FillingType.Plain);
+            _type = type;
+            this.CalculatePrice();
+            this.SKU = _lookup.LookupSKUByType(type);
+            _filling = new Filling(FillingType.None);
         }
 
-        public Filling Filling { get { return _filling; } set { _filling = value; } }
+        public Filling Filling { get => _filling; set { _filling = value; } }
         public Filling ChooseFillings(Filling filling)
         {
             _filling = filling;
+
+            this.Price += _lookup.LookupPriceByType(filling.Type);
+
             return _filling;
+        }
+
+        private float CalculatePrice()
+        {
+            if (_filling == null)
+            {
+                this.Price = _lookup.LookupPriceByType(_type);
+            }
+            else 
+            {
+                this.Price = _lookup.LookupPriceByType(_type) + _filling.Price;
+            }
+            return this.Price;
+        }
+
+        public override string ToString()
+        {
+            return _type.ToString();
         }
     }
 }
