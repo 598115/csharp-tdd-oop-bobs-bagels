@@ -96,7 +96,25 @@ namespace exercise.main
 
             Console.WriteLine(text);
         }
-      
-        
+
+        public void SendSMSorderSummary()
+        {
+            float total = GetBasketTotalPrice();
+            CultureInfo local = new("en-GB");
+
+            string text =
+                "[ Bob's Bagels Order Summary]\n\n";
+            foreach (Product item in _items)
+            {
+                if (item is ProductBundle) { text += $"{item.ToString()}\n\n"; continue; }
+                text += $"{item.ToString()}  ---  {item.Price.ToString("C", local)}\n\n";
+            }
+
+            text += $"\n\n\nTotal:  {total.ToString("C", local)}";
+
+            
+        }
+
+
     }
 }
